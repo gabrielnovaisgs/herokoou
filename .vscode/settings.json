@@ -1,0 +1,6 @@
+{
+	"files.exclude": {
+		"**/__pycache__": true
+	},
+	"python.linting.enable": true, //liberar o lint
+}
