@@ -1,15 +1,28 @@
 # !/bin/bash
 
+APPS_PATH=$(pwd)/app
+BACK_PATH=$APPS_PATH/back
+
 activate_back() {
-    source $(pwd)/app/back/.venv/bin/activate
+    source $BACK_PATH/.venv/bin/activate
 }
 
 db_apply() {
-    PYTHONPATH=$PYTHONPATH alembic upgrade head
+    PYTHONPATH=$APPS_PATH alembic upgrade head
+}
+
+load_back_env() {
+    echo ""
 }
 
 dev_commands(){
-    PYTHONPATH=/home/gabriel/personal/herokoou/app
+    if [[ -z $1 ]]; then
+        export $(grep -v '^#' $BACK_PATH/.env | xargs)
+        docker compose -f ./infra/dev/compose.yaml up -d
+        exit
+    fi
+
+
     case $1 in
         db:migrate)
             CREATE_ONLY=false
@@ -21,7 +34,7 @@ dev_commands(){
             activate_back
             cd ./app/back
             db_apply
-            PYTHONPATH=$PYTHONPATH alembic revision --autogenerate $@
+            PYTHONPATH=$APPS_PATH alembic revision --autogenerate $@
             [[ $CREATE_ONLY == false ]] && db_apply
             ;;
         
