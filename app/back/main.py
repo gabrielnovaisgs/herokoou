@@ -1,7 +1,26 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from back.src.services import Template, Container
-from back.src.models import User, Build
-app = FastAPI()
+from back.src.models import User, Build, DBEngine
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await on_startup()
+    yield
+    await on_shutdown()
+
+async def on_startup():
+    db = DBEngine()
+    db.init()
+
+async def on_shutdown():
+    pass
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+
 
 @app.get('/')
 async def read_root():

@@ -9,7 +9,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - herokoou_db:/var/lib/postgresql
+    #command: ["executable", "arg"]
 
 volumes:
-  db_data:
+  herokoou_db:
